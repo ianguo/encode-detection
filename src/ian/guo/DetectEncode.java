@@ -43,19 +43,22 @@ public class DetectEncode {
       int index = name.lastIndexOf('.');
       if (index >= 0 && index != name.length() - 1) {
         name = name.substring(index + 1);
-        return EXT_NAME_SET.contains(name);
+        return EXT_NAME_SET.contains(name.toLowerCase());
       }
       return false;
     }).collect(Collectors.toList());
 
+    int except = 0;
     for (File f : fs) {
       String encode = getFileEncode(f.getAbsolutePath());
       if (!"utf-8".equalsIgnoreCase(encode) && !"US-ASCII".equalsIgnoreCase(encode)) {
         String path = f.getAbsolutePath().substring(rootFolder.getAbsolutePath().length() + 1);
         System.out.println(encode + "\t" + path);
+        except++;
       }
     }
-
+    System.out.println("文件个数： " + fs.size());
+    System.out.println("非UTF-8编码文件个数： " + except);
   }
 
   private static final CodepageDetectorProxy DETECTOR = CodepageDetectorProxy.getInstance();
